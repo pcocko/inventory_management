@@ -1,0 +1,82 @@
+"ca":
+  inventory: Inventari
+  reports: Informes
+  field_identification: RUT
+  field_name: Nom
+  field_address0: Adreça
+  field_address1: Adreça 2
+  field_city: Ciutat
+  field_state: Provincia
+  field_country: País
+  field_phone0: Telèfon
+  field_phone1: Telèfon 2
+  field_fax: Fax
+  field_business: Giro
+  field_email: E-Mail
+  field_contact0: Contacte
+  field_contact1: Contacte 2
+  field_inventory_category: Categoria
+  field_manufacturer: Marca
+  field_part_number: Producte
+  field_inventory_part: Producte
+  field_inventory_providor: Proveïdor
+  field_quantity: Quantitat
+  field_squantity: Quant.
+  field_document: Document
+  field_document_type: Tipus de Document
+  field_location: Ubicació
+  field_user_from: Usuari
+  field_warehouse_from: Magatzem
+  field_user_to: Usuari
+  field_warehouse_to: Entrada de Magatzem
+  field_serial_number: Número de sèrie
+  inventory_stock: Stock d'Inventari
+  inventory_movements: Moviments
+  inventory_parts: Productes
+  inventory_categories: Categories
+  inventory_warehouses: Magatzems
+  inventory_providors: Proveïdors
+  inventory_manager: Inventari
+  Edit: Edita
+  Create: Crear
+  Delete: Eliminar
+  Cancel: Cancel
+  input_movements: Moviment d'Entrada
+  output_movements: Moviment de Sortida
+  User: Usuari
+  Project: Projecte
+  Providor: Proveïdor
+  Warehouse: Magatzem
+  Part: Producte
+  Category: Categoria
+  all_warehouses: Tots els magatzems
+  delete_confirmation: Està segur que desitja ELIMINAR el registre?
+  cant_delete_register: No és possible eliminar el registre. Probablement ha d'estar relacionat amb un altre.
+  out_of_stock: No hi ha estoc suficient per a realitzar el moviment de sortida.
+  field_where: ¿On es guarda?
+  field_user_manager: Administrador de Magatzem
+  permission_denied: No tens permís per fer canvis en aquest Magatzem
+  field_short_part_number: Producte
+  From: De
+  To: A
+  Date: Data
+  out_movement_list: Llista de Sortides
+  in_movement_list: Llista d'Entrades
+  part_comes_from: Producte prové de
+  part_goes_to: Producte es lliura a
+  inputs: Entrades
+  outputs: Sortides
+  stock: Stock
+  last_movement: Últim Moviment
+  total: Total
+  inventory_value: Inventari valoritzat
+  invoice: Factura
+  proforma-invoice: Factura Proforma
+  waybill: Guia de Despatx
+  ticket: Boleta
+  active: Vigent
+  obsolet: Obsolet
+  discontinued: Descatalogat
+  export: Exporta
+  reports: Informes
+  inventory_inputs_document_report: Entrades c/Documents de Compra
