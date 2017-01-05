@@ -36,7 +36,10 @@
         <br/><%= f.select(:inventory_part_id, @parts, {}, {:onchange => "update_default_value($('#inventory_in_movement_inventory_part_id').val());"}) %>
         <br/><%= f.text_field :serial_number, :size => 8 %>
         <br/><%= f.text_field :quantity, :size => 4, :required => true %>
-        <br/><%= f.select(:document_type, @doc_types) %>
+        <br/><%= f.select(:status, @statuses) %>
+        <% if (User.current.admin?) || (User.current.allowed_to?(:inventory_aca, nil, :global => true))%>
+          <br/><%= f.select(:property, @property) %>
+        <% end %>
         <br/><%= f.text_field :document, :size => 30 %>
         <br/><%= f.text_field :value, :size => 10 %>
         <br/><%= f.select(:warehouse_to_id, @warehouses, {},{:id => 'in_movement_warehouse_to'}) %>

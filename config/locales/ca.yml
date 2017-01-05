@@ -15,8 +15,8 @@
   field_email: E-Mail
   field_contact0: Contacte
   field_contact1: Contacte 2
-  field_inventory_category: Categoria
-  field_manufacturer: Marca
+  field_inventory_category: Marca
+  field_manufacturer: Model
   field_part_number: Producte
   field_inventory_part: Producte
   field_inventory_providor: Proveïdor
@@ -30,10 +30,12 @@
   field_user_to: Usuari
   field_warehouse_to: Entrada de Magatzem
   field_serial_number: Número de sèrie
+  field_warehouse_location: Ubicació
+  field_property: Propietari
   inventory_stock: Stock d'Inventari
   inventory_movements: Moviments
   inventory_parts: Productes
-  inventory_categories: Categories
+  inventory_categories: Marques
   inventory_warehouses: Magatzems
   inventory_providors: Proveïdors
   inventory_manager: Inventari
@@ -48,7 +50,7 @@
   Providor: Proveïdor
   Warehouse: Magatzem
   Part: Producte
-  Category: Categoria
+  Category: Marca
   all_warehouses: Tots els magatzems
   delete_confirmation: Està segur que desitja ELIMINAR el registre?
   cant_delete_register: No és possible eliminar el registre. Probablement ha d'estar relacionat amb un altre.
@@ -74,9 +76,10 @@
   proforma-invoice: Factura Proforma
   waybill: Guia de Despatx
   ticket: Boleta
-  active: Vigent
-  obsolet: Obsolet
-  discontinued: Descatalogat
+  active: Disponible
+  obsolet: Descatalogat
+  discontinued: Espatllat
   export: Exporta
   reports: Informes
   inventory_inputs_document_report: Entrades c/Documents de Compra
+  status: Estat

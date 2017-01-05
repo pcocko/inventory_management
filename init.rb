@@ -7,7 +7,9 @@ Redmine::Plugin.register :redmine_inventory_manager do
 
   permission :inventory, {:inventory => [:index, :movements, :categories, :parts, :warehouses, :providors]}, :public => false
 
-  menu :top_menu, :inventory, { :controller => 'inventory', :action => 'index' }, { :caption => 'Inventory', :before => 'admin'}
+  permission :inventory_aca, {:inventory => [:index, :movements]}
+
+  menu :top_menu, :inventory, { :controller => 'inventory', :action => 'index' }, :before => 'admin', :caption => 'Inventari', :if => Proc.new {User.current.logged? && User.current.allowed_to?(:inventory, nil, :global => true)}
   	
   settings :default => {'empty' => true}, :partial => 'settings/rim_settings'
 end

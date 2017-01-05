@@ -16,8 +16,8 @@
   field_email: E-Mail
   field_contact0: Contact
   field_contact1: Contact 2
-  field_inventory_category: Category
-  field_manufacturer: Manufacturer/Branch
+  field_inventory_category: Branch
+  field_manufacturer: Model
   field_part_number: Product
   field_inventory_part: Product
   field_inventory_providor: Providor
@@ -31,10 +31,12 @@
   field_user_to: User
   field_warehouse_to: Enter to Warehouse
   field_serial_number: Serial Number
+  field_warehouse_location: Location in Warehouse
+  field_property: Owner
   inventory_stock: Inventory Stock
   inventory_movements: Movements
   inventory_parts: Products
-  inventory_categories: Categories
+  inventory_categories: Branches
   inventory_warehouses: Warehouses
   inventory_providors: Providors
   inventory_manager: Inventory
@@ -49,7 +51,7 @@
   Providor: Providor
   Warehouse: Warehouse
   Part: Product
-  Category: Category
+  Category: Branch
   all_warehouses: All Warehouses
   delete_confirmation: Are you sure you want to DELETE the registry?
   cant_delete_register: You can not delete the record. Probably should be related to anotherone
@@ -75,7 +77,8 @@
   proforma-invoice: Proforma Invoice
   waybill: Waybill
   ticket: Ticket
-  active: Active
+  active: Available
   obsolet: Obsolet
   discontinued: Discontinued
   inventory_inputs_document_report: In Movements w/Buying Documents
+  status: Status

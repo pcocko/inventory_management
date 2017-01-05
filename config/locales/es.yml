@@ -15,8 +15,8 @@
   field_email: E-Mail
   field_contact0: Contacto
   field_contact1: Contacto 2
-  field_inventory_category: Categoría
-  field_manufacturer: Marca
+  field_inventory_category: Marca
+  field_manufacturer: Modelo
   field_part_number: Producto
   field_inventory_part: Producto
   field_inventory_providor: Proveedor
@@ -30,10 +30,12 @@
   field_user_to: Usuario
   field_warehouse_to: Entra a Bodega
   field_serial_number: Numero de Serie
+  field_warehouse_location: Ubicación
+  field_property: Propietario
   inventory_stock: Stock de Inventario
   inventory_movements: Movimientos
   inventory_parts: Productos
-  inventory_categories: Categorías
+  inventory_categories: Marcas
   inventory_warehouses: Bodegas
   inventory_providors: Proveedores
   inventory_manager: Inventario
@@ -48,7 +50,7 @@
   Providor: Proveedor
   Warehouse: Bodega
   Part: Producto
-  Category: Categoría
+  Category: Marca
   all_warehouses: Todas las Bodegas
   delete_confirmation: Esta seguro que desea ELIMINAR el registro?
   cant_delete_register: No es posible eliminar el registro. Probablemente debe estar relacionado con otro.
@@ -74,9 +76,10 @@
   proforma-invoice: Factura Proforma
   waybill: Guía de Despacho
   ticket: Boleta
-  active: Vigente
-  obsolet: Obsoleto
-  discontinued: Descontinuado
+  active: Disponible
+  obsolet: Descatalogado
+  discontinued: Averiado
   export: Exportar
   reports: Informes
   inventory_inputs_document_report: Entradas c/Documentos de Compra
+  status: Estado

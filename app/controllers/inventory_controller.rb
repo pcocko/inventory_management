@@ -59,7 +59,9 @@ class InventoryController < ApplicationController
   def index
     @warehouses = InventoryWarehouse.order("name ASC").all.map {|w| [w.name, w.id]}
     @warehouses += [l('all_warehouses')]
-    
+    @statuses_array = ['',l('active'),l("obsolet"),l('discontinued')]
+    @property_array = ['','ADASA','ACA']
+
     add = ""
     unless params[:warehouse]
       params[:warehouse] = l('all_warehouses')
@@ -77,14 +79,18 @@ class InventoryController < ApplicationController
     sql = ActiveRecord::Base.connection()
     @stock = sql.execute(
     "SELECT in_movements.part_number as part_number,
-    	in_movements.serial_number as serial_number, in_movements.category as category,
-    	in_movements.part_description as description, in_movements.value,
+    	in_movements.serial_number as serial_number, in_movements.manufacturer as manufacturer, 
+      in_movements.category as category,
+    	in_movements.part_description as description, in_movements.warehouse_name, 
+      in_movements.movement_warehouse_location, in_movements.movement_status, in_movements.movement_property,
+      in_movements.value,
     	IFNULL(in_movements.quantity,0) as input,
     	IFNULL(out_movements.quantity,0) as output,
     	(IFNULL(in_movements.quantity,0)-IFNULL(out_movements.quantity,0)) as stock,
     	GREATEST(IFNULL(in_movements.last_date,0), IFNULL(out_movements.last_date,0)) as last_movement
     FROM
   		(SELECT `inventory_parts`.`part_number` AS `part_number`, `inventory_movements`.`serial_number` AS `serial_number`,
+          `inventory_parts`.`manufacturer` AS `manufacturer`,
       		`inventory_parts`.`value` AS `value`,sum(`inventory_movements`.`quantity`) AS `quantity`,
       		max(`inventory_movements`.`date`) AS `last_date`
       	FROM (`inventory_parts`
@@ -95,10 +101,15 @@ class InventoryController < ApplicationController
                 ORDER BY `inventory_parts`.`part_number`) as out_movements
         RIGHT JOIN
   				(SELECT `inventory_parts`.`part_number` AS `part_number`, `inventory_categories`.`name` AS `category`,`inventory_parts`.`description` AS `part_description`,`inventory_movements`.`serial_number` AS `serial_number`,
+              `inventory_parts`.`manufacturer` AS `manufacturer`, `inventory_warehouses`.`name` AS `warehouse_name`,
+              `inventory_movements`.`document` AS `movement_warehouse_location`,
+              `inventory_movements`.`status` AS `movement_status`,
+              `inventory_movements`.`property` AS `movement_property`,
       				`inventory_parts`.`value` AS `value`,sum(`inventory_movements`.`quantity`) AS `quantity`,
       				max(`inventory_movements`.`date`) AS `last_date`
         		FROM (`inventory_parts`
           		LEFT JOIN `inventory_movements` on((`inventory_movements`.`inventory_part_id` = `inventory_parts`.`id`))
+              LEFT JOIN `inventory_warehouses` on((`inventory_movements`.`warehouse_to_id` = `inventory_warehouses`.`id`))
           		LEFT JOIN `inventory_categories` on((`inventory_categories`.`id` = `inventory_parts`.`inventory_category_id`)))
             		WHERE (isnull(`inventory_movements`.`project_id`) and isnull(`inventory_movements`.`user_to_id`))"+warehouse_query+"
               		GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`
@@ -226,11 +237,11 @@ class InventoryController < ApplicationController
 
   def user_has_warehouse_permission(user_id, warehouse_id)
     if warehouse_id == nil
-      if InventoryWarehouse.count(:conditions => "user_manager_id = " + user_id.to_s) > 0
+      if InventoryWarehouse.where('user_manager_id' => user_id.to_s).count > 0
         return true
       end
     else
-      if InventoryWarehouse.count(:conditions => ["user_manager_id = "+user_id.to_s+" and id = "+warehouse_id.to_s]) > 0
+      if InventoryWarehouse.where('user_manager_id = ? AND id = ?', user_id.to_s, warehouse_id.to_s).count > 0
         return true
       end
     end
@@ -249,6 +260,8 @@ class InventoryController < ApplicationController
     @doc_types = { l('invoice') => 1, l('ticket') => 2, l('proforma-invoice') => 3, l("waybill") => 4, l("inventory") => 5}
     current_user = find_current_user
     @has_permission = current_user.admin? || user_has_warehouse_permission(current_user.id, nil)
+    @statuses = { l('active') => 1, l("obsolet") => 2, l('discontinued') => 3}
+    @property = { 'ADASA' => 1, 'ACA' => 2}
     
     unless params[:from_options]
       params[:from_options] = 'user_from_id'

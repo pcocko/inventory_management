@@ -7,30 +7,36 @@
 <% end %>
 <table id='inventory_stock' cellspacing='0' cellpadding='4' border='1' style='border: 1px solid black;font-size:10px;border-collapse:collapse;'>
   <tr>
-    <th><%= l('field_short_part_number') %></th><th><%= l('field_category') %></th><th><%= l('field_description') %></th>
-    <th><%= l('field_value') %></th><th><%= l('inputs') %></th><th><%= l('outputs') %></th><th><%= l('stock') %></th>
-    <th><%= l('last_movement') %></th><th><%= l('total') %></th></tr>
+    <th><%= l('field_short_part_number') %></th><th><%= l('Category') %></th><th><%= l('field_manufacturer') %></th><th><%= l('field_description') %></th>
+    <th><%= l('field_warehouse_from') %></th>
+    <th><%= l('field_warehouse_location') %></th>
+    <th><%= l('stock') %></th>
+    <th><%= l('status') %></th>
+    <% if (User.current.admin?) || (User.current.allowed_to?(:inventory_aca, nil, :global => true)) %>
+      <td>Propetari</td>
+    <% end %>
+    </tr>
    <% 
    total = 0
 	 @stock.each do |s| %>
   <tr>
    <td><%= s[0] %><% if s[1] and s[1].length > 0 %> (<%= s[1] %>)<% end %></td>
-   <td><%= s[2] %></td>
    <td><%= s[3] %></td>
-   <td align='right'><%= number_to_currency(s[4]) %></td>
-   <td align='right'><%= s[5] %></td>
-   <td align='right'><%= s[6] %></td>
-   <td align='right'><b><%= s[7] %></b></td>
-   <td><%= s[8] %></td>
-   <td align='right'><%= number_to_currency(s[4].to_f*s[7].to_f) %></td>
+   <td><%= s[2] %></td>
+   <td><%= s[4] %></td>
+   <td><%= s[5] %></td>
+   <td><%= s[6] %></td>
+   
+   <td align='right'><b><%= s[12] %></b></td>
+   <td><%= @statuses_array[s[7]] %></td>
+   <% if (User.current.admin?) || (User.current.allowed_to?(:inventory_aca, nil, :global => true))%>
+    <td><%= @property_array[s[8]] %></td>
+   <% end %> 
   </tr>
    <% 
-    total += s[4].to_f*s[7].to_f 
+    total += s[9].to_f*s[12].to_f 
    end %>
-   <tr>
-    <th colspan="8" align="right"><%= l('inventory_value') %></th>
-    <th align="right"><%= number_to_currency(total) %></th>
-   </tr>
+   
 </table>
 
 <% unless Setting.plugin_redmine_inventory_manager["hide_donate_add"] %>
