@@ -33,6 +33,7 @@
   field_serial_number: Serial Number
   field_warehouse_location: Location in Warehouse
   field_property: Owner
+  field_comments: Comments
   inventory_stock: Inventory Stock
   inventory_movements: Movements
   inventory_parts: Products
@@ -52,6 +53,7 @@
   Warehouse: Warehouse
   Part: Product
   Category: Branch
+  Comments: Comments
   all_warehouses: All Warehouses
   delete_confirmation: Are you sure you want to DELETE the registry?
   cant_delete_register: You can not delete the record. Probably should be related to anotherone

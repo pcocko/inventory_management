@@ -23,6 +23,7 @@
         <br/><%= f.hidden_field :serial_number, :size => 8 %>
         <br/><%= f.text_field :quantity, :size => 4, :required => true %>        
         <br/><%= f.hidden_field :document, :size => 30 %>
+        <br/><%= f.text_field :comments, :size => 30 %>
         <br/><label><%= l('part_goes_to') %></label>
         <%= select_tag("to_options", options_for_select(@to_options, params[:to_options]), {:onchange => 'show_to_input($("#to_options").val());'}) %>
         <br/><span id='user_to_id_options'<%  if params[:to_options] != 'user_to_id' %> style='display:none'<% end %>><%= f.select(:user_to_id, @users, {}, {:disabled => (params[:to_options] == 'user_to_id' ? false:true)}) %></span>

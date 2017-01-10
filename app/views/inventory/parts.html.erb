@@ -12,12 +12,11 @@
 <% end %>
 
 <table style='font-size:10px;border-collapse:collapse;'>
-  <tr><th>Id#</th><th><%= l('field_part_number') %></th><th><%= l('field_manufacturer') %></th><th><%= l('field_description') %></th><th><%= l('field_category') %></th><th><%= l('field_status') %></th></tr>
+  <tr><th>Id#</th><th><%= l('field_part_number') %></th><th><%= l('field_manufacturer') %></th><th><%= l('field_description') %></th><th><%= l('field_category') %></th></tr>
   <% @parts.each do |p| %>
   <tr>
     <td><%= p.id %></td><td><%= p.part_number %></td><td><%= p.manufacturer %></td><td><%= p.description %></td>
-    <td><%= p.inventory_category.name %></td>
-    <td><%= @statuses_array[p.status] %></td>
+    <td><%= p.inventory_category.name %></td>    
   <% if @has_permission %> 
     <td><%= link_to image_tag('edit.png'), 'parts?edit='+p.id.to_s %></td>
     <td><%= link_to image_tag('delete.png'), 'parts?delete='+p.id.to_s, :confirm => l('delete_confirmation') %></td>

@@ -32,6 +32,7 @@
   field_serial_number: Numero de Serie
   field_warehouse_location: Ubicación
   field_property: Propietario
+  field_comments: Comentarios 
   inventory_stock: Stock de Inventario
   inventory_movements: Movimientos
   inventory_parts: Productos
@@ -51,6 +52,7 @@
   Warehouse: Almacén
   Part: Producto
   Category: Marca
+  Comments: Comentarios
   all_warehouses: Todas las Bodegas
   delete_confirmation: Esta seguro que desea ELIMINAR el registro?
   cant_delete_register: No es posible eliminar el registro. Probablemente debe estar relacionado con otro.

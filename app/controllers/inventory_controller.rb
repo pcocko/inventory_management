@@ -97,7 +97,7 @@ class InventoryController < ApplicationController
           LEFT JOIN `inventory_movements` on((`inventory_movements`.`inventory_part_id` = `inventory_parts`.`id`)))
             WHERE (isnull(`inventory_movements`.`inventory_providor_id`) AND isnull(`inventory_movements`.`user_from_id`)"+warehouse_query+"
               AND ((`inventory_movements`.`project_id` is not null) or (`inventory_movements`.`user_to_id` is not null)))
-                GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`
+                GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`, `inventory_movements`.`document`, `inventory_movements`.`status`
                 ORDER BY `inventory_parts`.`part_number`) as out_movements
         RIGHT JOIN
   				(SELECT `inventory_parts`.`part_number` AS `part_number`, `inventory_categories`.`name` AS `category`,`inventory_parts`.`description` AS `part_description`,`inventory_movements`.`serial_number` AS `serial_number`,
@@ -112,7 +112,7 @@ class InventoryController < ApplicationController
               LEFT JOIN `inventory_warehouses` on((`inventory_movements`.`warehouse_to_id` = `inventory_warehouses`.`id`))
           		LEFT JOIN `inventory_categories` on((`inventory_categories`.`id` = `inventory_parts`.`inventory_category_id`)))
             		WHERE (isnull(`inventory_movements`.`project_id`) and isnull(`inventory_movements`.`user_to_id`))"+warehouse_query+"
-              		GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`
+              		GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`, `inventory_movements`.`document`, `inventory_movements`.`status`
               		ORDER BY `inventory_parts`.`part_number`) as in_movements
         ON
           (out_movements.part_number = in_movements.part_number
@@ -261,6 +261,7 @@ class InventoryController < ApplicationController
     current_user = find_current_user
     @has_permission = current_user.admin? || user_has_warehouse_permission(current_user.id, nil)
     @statuses = { l('active') => 1, l("obsolet") => 2, l('discontinued') => 3}
+    @statuses_array = ['',l('active'),l("obsolet"),l('discontinued')]
     @property = { 'ADASA' => 1, 'ACA' => 2}
     
     unless params[:from_options]

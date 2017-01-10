@@ -33,6 +33,7 @@
   field_warehouse_location: Ubicació
   field_property: Propietari
   field_category: Marca
+  field_comments: Comentaris
   inventory_stock: Stock d'Inventari
   inventory_movements: Moviments
   inventory_parts: Productes
@@ -52,6 +53,7 @@
   Warehouse: Magatzem
   Part: Producte
   Category: Marca
+  Comments: Comentaris
   all_warehouses: Tots els magatzems
   delete_confirmation: Està segur que desitja ELIMINAR el registre?
   cant_delete_register: No és possible eliminar el registre. Probablement ha d'estar relacionat amb un altre.
