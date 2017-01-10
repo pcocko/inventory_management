@@ -250,7 +250,7 @@ class InventoryController < ApplicationController
   
 
   def movements
-    @parts = InventoryPart.order("part_number ASC").all.map {|p| [p.part_number,p.id]}
+    @parts = InventoryPart.order("part_number ASC").all.map {|p| [p.part_number + ' - ' + p.manufacturer,p.id]}
     @providors = InventoryProvidor.order("name ASC").all.map {|p| [p.name,p.id]}
     @inv_projects = Project.order('name ASC').all.map {|p| [p.name,p.id]}
     @users = User.where('status=1').order('lastname ASC, firstname ASC').map {|u| [u.lastname+" "+u.firstname, u.id]}

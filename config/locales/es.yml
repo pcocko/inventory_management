@@ -22,13 +22,13 @@
   field_inventory_providor: Proveedor
   field_quantity: Cantidad
   field_squantity: Cant.
-  field_document: Documento
+  field_document: Ubicación en el almacén
   field_document_type: Tipo Documento
   field_location: Locación
   field_user_from: Usuario
-  field_warehouse_from: Bodega
+  field_warehouse_from: Almacén
   field_user_to: Usuario
-  field_warehouse_to: Entra a Bodega
+  field_warehouse_to: Entra a Almacén
   field_serial_number: Numero de Serie
   field_warehouse_location: Ubicación
   field_property: Propietario
@@ -36,7 +36,7 @@
   inventory_movements: Movimientos
   inventory_parts: Productos
   inventory_categories: Marcas
-  inventory_warehouses: Bodegas
+  inventory_warehouses: Almacenes
   inventory_providors: Proveedores
   inventory_manager: Inventario
   Edit: Editar
@@ -48,7 +48,7 @@
   User: Usuario
   Project: Projecto
   Providor: Proveedor
-  Warehouse: Bodega
+  Warehouse: Almacén
   Part: Producto
   Category: Marca
   all_warehouses: Todas las Bodegas
@@ -56,7 +56,7 @@
   cant_delete_register: No es posible eliminar el registro. Probablemente debe estar relacionado con otro.
   out_of_stock: No existe stock suficiente para realizar el movimiento de salida.
   field_where: ¿Donde se guarda?
-  field_user_manager: Administrador de Bodega
+  field_user_manager: Administrador de Almacén
   permission_denied: No tienes permiso para realizar cambios en esa Bodega
   field_short_part_number: Producto
   From: De

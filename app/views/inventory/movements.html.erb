@@ -25,10 +25,10 @@
 </script>
 <table style='font-size:10px;border-collapse:collapse;'>
   <tr><th>Id#</th><th><%= l('field_short_part_number') %></th><th><%= l('From') %></th><th><%= l('Warehouse') %></th>
-  <th><%= l('field_squantity') %></th><th>$</th><th><%= l('field_document') %></th><th><%= l('Date') %></th></tr>
+  <th><%= l('field_squantity') %></th><th><%= l('field_document') %></th><th><%= l('Date') %></th></tr>
   <% @movements_in.each do |p| %>
   <tr>
-    <td><%= p.id %></td><td><a href='javascript:show_part_info("<%= p.inventory_part.part_number %>");'><%= p.inventory_part.part_number %></a></td>
+    <td><%= p.id %></td><td><a href='javascript:show_part_info("<%= p.inventory_part.part_number %>");'><%= p.inventory_part.part_number + ' - ' + p.inventory_part.manufacturer %></a></td>
     <td>
     <% if p.user_from_id %>
     <%= User.find(p.user_from_id).login %>
@@ -39,8 +39,7 @@
     <% end %>
     </td>
     <td><%= InventoryWarehouse.find(p.warehouse_to_id).name rescue "" %></td>
-    <td align='right'><%= p.quantity %></td>
-    <td align='right'><%= number_to_currency(p.value) %></td>
+    <td align='right'><%= p.quantity %></td>    
     <td align='right'><%= p.document %></td><td><%= p.date.strftime("%Y-%m-%d") %></td>
   <% if @has_permission %>
     <td><%= link_to image_tag('edit.png'), 'movements?edit_in='+p.id.to_s %></td>
@@ -63,7 +62,7 @@
 
 <h3><%= l('out_movement_list') %></h3>
 <table style='font-size:10px;border-collapse:collapse;'>
-  <tr><th>Id#</th><th><%= l('field_short_part_number') %></th><th><%= l('Warehouse') %></th><th><%= l('To') %></th><th><%= l('field_squantity') %></th><th><%= l('field_document') %></th><th><%= l('Date') %></th></tr>
+  <tr><th>Id#</th><th><%= l('field_short_part_number') %></th><th><%= l('Warehouse') %></th><th><%= l('To') %></th><th><%= l('field_squantity') %></th><th><%= l('Date') %></th></tr>
   <% @movements_out.each do |p| %>
   <tr>
     <td><%= p.id %></td>
@@ -77,7 +76,7 @@
     <% end %>
     </td>
     <td align='right'><%= p.quantity %></td>
-    <td align='right'><%= p.document %></td><td><%= p.date %></td>
+    <td><%= p.date.strftime("%Y-%m-%d") %></td>
   <% if @has_permission %>
     <td><%= link_to image_tag('edit.png'), 'movements?edit_out='+p.id.to_s %></td>
     <td><%= link_to image_tag('delete.png'), 'movements?delete='+p.id.to_s, :confirm => l('delete_confirmation') %></td>

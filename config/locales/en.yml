@@ -23,7 +23,7 @@
   field_inventory_providor: Providor
   field_quantity: Quantity
   field_squantity: Qty
-  field_document: Document
+  field_document: Location in Warehouse
   field_document_type: Document Type
   field_location: Location
   field_user_from: User

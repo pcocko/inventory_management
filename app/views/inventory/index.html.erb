@@ -30,7 +30,7 @@
    <td align='right'><b><%= s[12] %></b></td>
    <td><%= @statuses_array[s[7]] %></td>
    <% if (User.current.admin?) || (User.current.allowed_to?(:inventory_aca, nil, :global => true))%>
-    <td><%= @property_array[s[8]] %></td>
+    <td><b><%= @property_array[s[8]] %></b></td>
    <% end %> 
   </tr>
    <% 

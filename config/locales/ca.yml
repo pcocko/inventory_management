@@ -22,7 +22,7 @@
   field_inventory_providor: Proveïdor
   field_quantity: Quantitat
   field_squantity: Quant.
-  field_document: Document
+  field_document: Ubicació en el magatzem
   field_document_type: Tipus de Document
   field_location: Ubicació
   field_user_from: Usuari
@@ -32,6 +32,7 @@
   field_serial_number: Número de sèrie
   field_warehouse_location: Ubicació
   field_property: Propietari
+  field_category: Marca
   inventory_stock: Stock d'Inventari
   inventory_movements: Moviments
   inventory_parts: Productes
