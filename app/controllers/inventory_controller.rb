@@ -95,8 +95,7 @@ class InventoryController < ApplicationController
       		max(`inventory_movements`.`date`) AS `last_date`
       	FROM (`inventory_parts`
           LEFT JOIN `inventory_movements` on((`inventory_movements`.`inventory_part_id` = `inventory_parts`.`id`)))
-            WHERE (isnull(`inventory_movements`.`inventory_providor_id`) AND isnull(`inventory_movements`.`user_from_id`)"+warehouse_query+"
-              AND ((`inventory_movements`.`project_id` is not null) or (`inventory_movements`.`user_to_id` is not null)))
+            WHERE (`inventory_movements`.`type_movement` = 2)"+warehouse_query+"              
                 GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`, `inventory_movements`.`document`, `inventory_movements`.`status`
                 ORDER BY `inventory_parts`.`part_number`) as out_movements
         RIGHT JOIN
@@ -111,7 +110,7 @@ class InventoryController < ApplicationController
           		LEFT JOIN `inventory_movements` on((`inventory_movements`.`inventory_part_id` = `inventory_parts`.`id`))
               LEFT JOIN `inventory_warehouses` on((`inventory_movements`.`warehouse_to_id` = `inventory_warehouses`.`id`))
           		LEFT JOIN `inventory_categories` on((`inventory_categories`.`id` = `inventory_parts`.`inventory_category_id`)))
-            		WHERE (isnull(`inventory_movements`.`project_id`) and isnull(`inventory_movements`.`user_to_id`))"+warehouse_query+"
+            		WHERE (`inventory_movements`.`type_movement` = 1)"+warehouse_query+"
               		GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`, `inventory_movements`.`document`, `inventory_movements`.`status`
               		ORDER BY `inventory_parts`.`part_number`) as in_movements
         ON
@@ -216,8 +215,7 @@ class InventoryController < ApplicationController
             max(`inventory_movements`.`date`) AS `last_date`
               FROM (`inventory_parts`
                 LEFT JOIN `inventory_movements` on((`inventory_movements`.`inventory_part_id` = `inventory_parts`.`id`)))
-                  WHERE (isnull(`inventory_movements`.`inventory_providor_id`) AND isnull(`inventory_movements`.`user_from_id`)"+add+"
-                    AND ((`inventory_movements`.`project_id` is not null) or (`inventory_movements`.`user_to_id` is not null)))
+                  WHERE (`inventory_movements`.`type_movement` = 2)"+add+"                  
                       GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`
                       ORDER BY `inventory_parts`.`part_number`) as out_movements
               RIGHT JOIN
@@ -226,7 +224,7 @@ class InventoryController < ApplicationController
             max(`inventory_movements`.`date`) AS `last_date`
               FROM (`inventory_parts`
                 LEFT JOIN `inventory_movements` on((`inventory_movements`.`inventory_part_id` = `inventory_parts`.`id`)))
-                  WHERE (isnull(`inventory_movements`.`project_id`) and isnull(`inventory_movements`.`user_to_id`))"+add+"
+                  WHERE (`inventory_movements`.`type_movement` = 1)"+add+"
                     GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`
                     ORDER BY `inventory_parts`.`part_number`) as in_movements
               ON
@@ -250,13 +248,13 @@ class InventoryController < ApplicationController
   
 
   def movements
-    @parts = InventoryPart.order("part_number ASC").all.map {|p| [p.part_number + ' - ' + p.manufacturer,p.id]}
+    @parts = InventoryPart.order("part_number ASC").all.map {|p| [p.part_number + (p.manufacturer? ? ' - ' + p.manufacturer : '') + (p.description? ? ' - ' + p.description : ''),p.id]}
     @providors = InventoryProvidor.order("name ASC").all.map {|p| [p.name,p.id]}
     @inv_projects = Project.order('name ASC').all.map {|p| [p.name,p.id]}
     @users = User.where('status=1').order('lastname ASC, firstname ASC').map {|u| [u.lastname+" "+u.firstname, u.id]}
     @warehouses = InventoryWarehouse.order("name ASC").all.map {|w| [w.name, w.id]}
     @from_options = {l('User') => 'user_from_id', l('Warehouse') => 'warehouse_from_id', l('Providor') => 'inventory_providor_id'}
-    @to_options = {l('User') => 'user_to_id', l('Project') => 'project_id'}
+    @to_options = {l('User') => 'user_to_id', l('Project') => 'project_id',l('Warehouse') => 'warehouse_to_id'}
     @doc_types = { l('invoice') => 1, l('ticket') => 2, l('proforma-invoice') => 3, l("waybill") => 4, l("inventory") => 5}
     current_user = find_current_user
     @has_permission = current_user.admin? || user_has_warehouse_permission(current_user.id, nil)
@@ -390,8 +388,8 @@ class InventoryController < ApplicationController
       end
     end
 
-    @movements_in = InventoryMovement.where("project_id is null and user_to_id is null").order("date DESC")
-    @movements_out = InventoryMovement.where("inventory_providor_id is null and user_from_id is null and (project_id is not null or user_to_id is not null)").order("date DESC")
+    @movements_in = InventoryMovement.where("type_movement = 1").order("date DESC")
+    @movements_out = InventoryMovement.where("type_movement = 2").order("date DESC")
   end
 
   

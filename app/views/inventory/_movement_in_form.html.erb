@@ -42,6 +42,7 @@
         <% end %>
         <br/><%= f.text_field :document, :size => 30 %>
         <br/><%= f.hidden_field :value, :size => 10 %>
+        <br/><%= f.hidden_field :type_movement, {:value => 1} %>
         <br/><%= f.select(:warehouse_to_id, @warehouses, {},{:id => 'in_movement_warehouse_to'}) %>
         <% if params[:edit_in] %><input type='hidden' name='edit_in' value='<%= params[:edit_in] %>'/>
         <% else %><input type='hidden' name='create_in' value='true'/><% end %>
