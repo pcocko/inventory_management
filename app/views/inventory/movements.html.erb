@@ -74,6 +74,8 @@
     <%= User.find(p.user_to_id).login %>
     <% elsif p.project %>
     <%= p.project.name %>
+    <% elsif p.warehouse_to_id %>
+    <%= InventoryWarehouse.find(p.warehouse_to_id).name %>
     <% end %>
     </td>
     <td align='right'><%= p.quantity %></td>

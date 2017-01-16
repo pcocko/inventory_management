@@ -10,8 +10,6 @@
     <th><%= l('field_short_part_number') %></th><th><%= l('Category') %></th><th><%= l('field_manufacturer') %></th><th><%= l('field_description') %></th>
     <th><%= l('field_warehouse_from') %></th>
     <th><%= l('field_warehouse_location') %></th>
-    <th>IN</th>
-    <th>OUT</th>
     <th><%= l('stock') %></th>    
     <th><%= l('status') %></th>
     <% if (User.current.admin?) || (User.current.allowed_to?(:inventory_aca, nil, :global => true)) %>
@@ -28,8 +26,6 @@
    <td><%= s[4] %></td>
    <td><%= s[5] %></td>
    <td><%= s[6] %></td>
-   <td align='right'><b><%= s[10] %></b></td>
-   <td align='right'><b><%= s[11] %></b></td>
    <td align='right'><b><%= s[12] %></b></td>
    <td><%= @statuses_array[s[7]] %></td>
    <% if (User.current.admin?) || (User.current.allowed_to?(:inventory_aca, nil, :global => true))%>

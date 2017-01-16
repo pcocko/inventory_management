@@ -89,7 +89,7 @@ class InventoryController < ApplicationController
     	(IFNULL(in_movements.quantity,0)-IFNULL(out_movements.quantity,0)) as stock,
     	GREATEST(IFNULL(in_movements.last_date,0), IFNULL(out_movements.last_date,0)) as last_movement
     FROM
-  		(SELECT `inventory_parts`.`part_number` AS `part_number`, `inventory_movements`.`serial_number` AS `serial_number`,
+  		(SELECT `inventory_parts`.`id` as `part_id`, `inventory_parts`.`part_number` AS `part_number`, `inventory_movements`.`serial_number` AS `serial_number`,
           `inventory_parts`.`manufacturer` AS `manufacturer`,
       		`inventory_parts`.`value` AS `value`,sum(`inventory_movements`.`quantity`) AS `quantity`,
       		max(`inventory_movements`.`date`) AS `last_date`
@@ -99,7 +99,7 @@ class InventoryController < ApplicationController
                 GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`, `inventory_movements`.`document`, `inventory_movements`.`status`
                 ORDER BY `inventory_parts`.`part_number`) as out_movements
         RIGHT JOIN
-  				(SELECT `inventory_parts`.`part_number` AS `part_number`, `inventory_categories`.`name` AS `category`,`inventory_parts`.`description` AS `part_description`,`inventory_movements`.`serial_number` AS `serial_number`,
+  				(SELECT `inventory_parts`.`id` as `part_id`, `inventory_parts`.`part_number` AS `part_number`, `inventory_categories`.`name` AS `category`,`inventory_parts`.`description` AS `part_description`,`inventory_movements`.`serial_number` AS `serial_number`,
               `inventory_parts`.`manufacturer` AS `manufacturer`, `inventory_warehouses`.`name` AS `warehouse_name`,
               `inventory_movements`.`document` AS `movement_warehouse_location`,
               `inventory_movements`.`status` AS `movement_status`,
@@ -114,8 +114,7 @@ class InventoryController < ApplicationController
               		GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`, `inventory_movements`.`document`, `inventory_movements`.`status`
               		ORDER BY `inventory_parts`.`part_number`) as in_movements
         ON
-          (out_movements.part_number = in_movements.part_number
-          AND out_movements.serial_number = in_movements.serial_number)
+          (out_movements.part_id = in_movements.part_id)
         ORDER BY category, part_number;")
     return @stock
   end
@@ -342,6 +341,8 @@ class InventoryController < ApplicationController
         params[:to_options] = 'user_to_id'
       elsif @inventory_out_movement.inventory_providor
         params[:to_options] = 'project_id'
+      elsif @inventory_out_movement.warehouse_to_id
+        params[:to_options] = 'warehouse_to_id'
       end
     else
       @inventory_out_movement = InventoryMovement.new
@@ -362,6 +363,7 @@ class InventoryController < ApplicationController
               @inventory_out_movement.serial_number = nil
               @inventory_out_movement.quantity = nil
               @inventory_out_movement.value = nil
+              @inventory_out_movement.comments = nil
               params[:create_out]  = true
             end
           else
