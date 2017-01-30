@@ -29,7 +29,7 @@
     <%= error_messages_for 'inventory_in_movement' %>
       <p>
         <label><%= l('part_comes_from') %></label>
-        <%= select_tag("from_options", options_for_select(@from_options, params[:from_options]), {:onchange => "show_from_input($('#from_options').val());"}) %>
+        <%= select_tag("from_options", options_for_select(@from_options_in, params[:from_options]), {:onchange => "show_from_input($('#from_options').val());"}) %>
         <br/><span id='user_from_id_options'<%  if params[:from_options] != 'user_from_id' %> style='display:none'<% end %>><%= f.select(:user_from_id, @users, {}, {:disabled => (params[:from_options] == 'user_from_id' ? false:true)}) %></span>
         <span id='warehouse_from_id_options'<%  if params[:from_options] != 'warehouse_from_id' %> style='display:none'<% end %>><%= f.select(:warehouse_from_id, @warehouses, {}, {:disabled => (params[:from_options] == 'warehouse_from_id' ? false:true)}) %></span>
         <span id='inventory_providor_id_options'<%  if params[:from_options] != 'inventory_providor_id' %> style='display:none'<% end %>><%= f.select(:inventory_providor_id, @providors, {}, {:disabled => (params[:from_options] == 'inventory_providor_id' ? false:true)}) %></span>

@@ -3,6 +3,15 @@ class InventoryController < ApplicationController
 
 	unloadable
 
+  after_filter :clear_xhr_flash
+
+  def clear_xhr_flash
+    if request.xhr?
+      # Also modify 'flash' to other attributes which you use in your common/flashes for js
+      flash.discard
+    end
+  end
+
   def reports
     @warehouses = InventoryWarehouse.order("name ASC").all.map {|w| [w.name, w.id]}
     @warehouses += [l('all_warehouses')]
@@ -301,6 +310,7 @@ class InventoryController < ApplicationController
     @inv_projects = Project.order('name ASC').all.map {|p| [p.name,p.id]}
     @users = User.where('status=1').order('lastname ASC, firstname ASC').map {|u| [u.lastname+" "+u.firstname, u.id]}
     @warehouses = InventoryWarehouse.order("name ASC").all.map {|w| [w.name, w.id]}
+    @from_options_in = {l('User') => 'user_from_id', l('Providor') => 'inventory_providor_id'}
     @from_options = {l('User') => 'user_from_id', l('Warehouse') => 'warehouse_from_id', l('Providor') => 'inventory_providor_id'}
     @to_options = {l('User') => 'user_to_id', l('Project') => 'project_id',l('Warehouse') => 'warehouse_to_id'}
     @doc_types = { l('invoice') => 1, l('ticket') => 2, l('proforma-invoice') => 3, l("waybill") => 4, l("inventory") => 5}
@@ -310,7 +320,7 @@ class InventoryController < ApplicationController
     @statuses_array = ['',l('active'),l("obsolet"),l('discontinued')]
     @property = { 'ADASA' => 1, 'ACA' => 2}    
     flash.discard
-    
+
     unless params[:from_options]
       params[:from_options] = 'user_from_id'
     end
@@ -355,7 +365,11 @@ class InventoryController < ApplicationController
           stock_ok = true
           if @inventory_in_movement.warehouse_from_id
           	available_stock = check_available_stock(@inventory_in_movement)
-          	if @inventory_in_movement.quantity and @inventory_in_movement.quantity <= available_stock
+            logger.info "STOCK DISPONIBLE: "
+            logger.info available_stock
+            logger.info "movement.warehouse_from_id: "            
+            logger.info @inventory_in_movement.warehouse_from_id
+          	if @inventory_in_movement.quantity and @inventory_in_movement.quantity > available_stock
           		stock_ok = false
           	end
           end
@@ -621,13 +635,4 @@ class InventoryController < ApplicationController
     @warehouses = InventoryWarehouse.all
   end
 
-end
-
-after_filter :clear_xhr_flash
-
-def clear_xhr_flash
-  if request.xhr?
-    # Also modify 'flash' to other attributes which you use in your common/flashes for js
-    flash.discard
-  end
 end
