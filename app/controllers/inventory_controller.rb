@@ -163,16 +163,18 @@ class InventoryController < ApplicationController
   
   def inventory_stock_xls
     add = ""
+    add_in = ""
+    add_out = ""
     unless params[:warehouse]
       params[:warehouse] = l('all_warehouses')
     end
     
     if params[:warehouse] != l('all_warehouses')
-      add = " AND (`inventory_movements`.`warehouse_from_id` = #{params[:warehouse]} OR " +
-            "`inventory_movements`.`warehouse_to_id` = #{params[:warehouse]})"
+      add_in = " AND (`inventory_movements`.`warehouse_to_id` = #{params[:warehouse]})"
+      add_out = " AND (`inventory_movements`.`warehouse_from_id` = #{params[:warehouse]})"
       params[:warehouse] = params[:warehouse].to_i
     end
-    @stock = get_stock(add)
+    @stock = get_stock(add_in,add_out)
     
     headers = [l(:field_short_part_number), l(:field_category), l(:field_description), l(:field_value),
                 l(:inputs), l(:outputs),  l(:stock), l(:last_movement), l(:total)]
