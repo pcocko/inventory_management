@@ -82,6 +82,7 @@
   active: Disponible
   obsolet: Descatalogat
   discontinued: Espatllat
+  unknown: Desconegut
   export: Exporta
   reports: Informes
   inventory_inputs_document_report: Entrades c/Documents de Compra

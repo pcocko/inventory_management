@@ -81,6 +81,7 @@
   active: Disponible
   obsolet: Descatalogado
   discontinued: Averiado
+  unknown: Desconocido
   export: Exportar
   reports: Informes
   inventory_inputs_document_report: Entradas c/Documentos de Compra

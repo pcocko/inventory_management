@@ -68,7 +68,7 @@ class InventoryController < ApplicationController
   def index
     @warehouses = InventoryWarehouse.order("name ASC").all.map {|w| [w.name, w.id]}
     @warehouses += [l('all_warehouses')]
-    @statuses_array = ['',l('active'),l("obsolet"),l('discontinued')]
+    @statuses_array = ['',l('active'),l("obsolet"),l('discontinued'),l('unknown')]
     @property_array = ['','ADASA','ACA']
 
     add_in = ""
@@ -316,8 +316,8 @@ class InventoryController < ApplicationController
     @doc_types = { l('invoice') => 1, l('ticket') => 2, l('proforma-invoice') => 3, l("waybill") => 4, l("inventory") => 5}
     current_user = find_current_user
     @has_permission = current_user.admin? || user_has_warehouse_permission(current_user.id, nil)
-    @statuses = { l('active') => 1, l("obsolet") => 2, l('discontinued') => 3}
-    @statuses_array = ['',l('active'),l("obsolet"),l('discontinued')]
+    @statuses = { l('active') => 1, l("obsolet") => 2, l('discontinued') => 3, l('unknown') => 4}
+    @statuses_array = ['',l('active'),l("obsolet"),l('discontinued'),l('unknown')]
     @property = { 'ADASA' => 1, 'ACA' => 2}    
     flash.discard
 

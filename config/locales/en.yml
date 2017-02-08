@@ -82,5 +82,6 @@
   active: Available
   obsolet: Obsolet
   discontinued: Discontinued
+  unknown: Unknown
   inventory_inputs_document_report: In Movements w/Buying Documents
   status: Status
