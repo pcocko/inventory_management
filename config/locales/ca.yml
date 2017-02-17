@@ -27,10 +27,13 @@
   field_location: Ubicació
   field_user_from: Usuari
   field_warehouse_from: Magatzem
+  field_warehouse: Magatzem
   field_user_to: Usuari
   field_warehouse_to: Entrada de Magatzem
   field_serial_number: Número de sèrie
   field_warehouse_location: Ubicació
+  field_location_to: Ubicació
+  field_location_from: Ubicació
   field_property: Propietari
   field_category: Marca
   field_comments: Comentaris
@@ -39,6 +42,7 @@
   inventory_parts: Productes
   inventory_categories: Marques
   inventory_warehouses: Magatzems
+  inventory_locations: Llocs
   inventory_providors: Proveïdors
   inventory_manager: Inventari
   Edit: Edita

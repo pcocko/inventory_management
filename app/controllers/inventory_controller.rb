@@ -103,7 +103,7 @@ class InventoryController < ApplicationController
           `inventory_parts`.`manufacturer` AS `manufacturer`,
           `inventory_warehouses`.`id` AS `warehouse_id`,
           `inventory_warehouses`.`name` AS `warehouse_name`,
-          `inventory_movements`.`document` AS `movement_warehouse_location`,
+          `inventory_locations`.`name` AS `movement_warehouse_location`,
           `inventory_movements`.`status` AS `movement_status`,
           `inventory_movements`.`property` AS `movement_property`,
       		`inventory_parts`.`value` AS `value`,sum(`inventory_movements`.`quantity`) AS `quantity`,
@@ -111,9 +111,10 @@ class InventoryController < ApplicationController
       	FROM (`inventory_parts`
           LEFT JOIN `inventory_movements` on((`inventory_movements`.`inventory_part_id` = `inventory_parts`.`id`))
           LEFT JOIN `inventory_warehouses` on((`inventory_movements`.`warehouse_from_id` = `inventory_warehouses`.`id`))
-          LEFT JOIN `inventory_categories` on((`inventory_categories`.`id` = `inventory_parts`.`inventory_category_id`)))
+          LEFT JOIN `inventory_categories` on((`inventory_categories`.`id` = `inventory_parts`.`inventory_category_id`))
+          LEFT JOIN `inventory_locations` on((`inventory_locations`.`id` = `inventory_movements`.`location_from_id`)))
             WHERE (`inventory_movements`.`type_movement` = 2)"+warehouse_query_out+"              
-                GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`, `inventory_movements`.`document`, `inventory_movements`.`status`,
+                GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`, `inventory_locations`.`name`, `inventory_movements`.`status`,
                          `inventory_warehouses`.`name`, `inventory_movements`.`property`, `inventory_warehouses`.`id`
                 ORDER BY `inventory_parts`.`part_number`) as out_movements
         RIGHT JOIN
@@ -121,7 +122,7 @@ class InventoryController < ApplicationController
               `inventory_parts`.`manufacturer` AS `manufacturer`, 
               `inventory_warehouses`.`id` AS `warehouse_id`,
               `inventory_warehouses`.`name` AS `warehouse_name`,
-              `inventory_movements`.`document` AS `movement_warehouse_location`,
+              `inventory_locations`.`name` AS `movement_warehouse_location`,
               `inventory_movements`.`status` AS `movement_status`,
               `inventory_movements`.`property` AS `movement_property`,
       				`inventory_parts`.`value` AS `value`,sum(`inventory_movements`.`quantity`) AS `quantity`,
@@ -129,15 +130,17 @@ class InventoryController < ApplicationController
         		FROM (`inventory_parts`
           		LEFT JOIN `inventory_movements` on((`inventory_movements`.`inventory_part_id` = `inventory_parts`.`id`))
               LEFT JOIN `inventory_warehouses` on((`inventory_movements`.`warehouse_to_id` = `inventory_warehouses`.`id`))
-          		LEFT JOIN `inventory_categories` on((`inventory_categories`.`id` = `inventory_parts`.`inventory_category_id`)))
+          		LEFT JOIN `inventory_categories` on((`inventory_categories`.`id` = `inventory_parts`.`inventory_category_id`))
+              LEFT JOIN `inventory_locations` on((`inventory_locations`.`id` = `inventory_movements`.`location_to_id`)))
             		WHERE (`inventory_movements`.`type_movement` = 1)"+warehouse_query_in+"
-              		GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`, `inventory_movements`.`document`, `inventory_movements`.`status`, 
+              		GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`, `inventory_locations`.`name`, `inventory_movements`.`status`, 
                            `inventory_warehouses`.`name`, `inventory_movements`.`property`, `inventory_warehouses`.`id`
               		ORDER BY `inventory_parts`.`part_number`) as in_movements
         ON
           (out_movements.part_id = in_movements.part_id AND
            out_movements.movement_status = in_movements.movement_status AND
            out_movements.warehouse_id = in_movements.warehouse_id AND
+           out_movements.movement_warehouse_location = in_movements.movement_warehouse_location AND
            out_movements.movement_property = in_movements.movement_property)
         ORDER BY category, part_number;")
     return @stock
@@ -222,18 +225,20 @@ class InventoryController < ApplicationController
     add_in = " AND (`inventory_movements`.`warehouse_to_id` = #{movement.warehouse_from_id} AND " +
             "`inventory_movements`.`inventory_part_id` = #{movement.inventory_part_id} AND " +
             "`inventory_movements`.`status` = #{movement.status} AND " +
-            "`inventory_movements`.`property` = #{movement.property}) "
+            "`inventory_movements`.`property` = #{movement.property} AND " +
+            "`inventory_movements`.`location_to_id` = #{movement.location_from_id}) "
     add_out = " AND (`inventory_movements`.`warehouse_from_id` = #{movement.warehouse_from_id} AND " +
             "`inventory_movements`.`inventory_part_id` = #{movement.inventory_part_id} AND " +
             "`inventory_movements`.`status` = #{movement.status} AND " +
-            "`inventory_movements`.`property` = #{movement.property}) "
+            "`inventory_movements`.`property` = #{movement.property} AND " +
+            "`inventory_movements`.`location_from_id` = #{movement.location_from_id}) "
 
     unless movement.serial_number.blank?
       add << " AND `inventory_movements`.`serial_number` = '#{movement.serial_number}'"
     end
     sql = ActiveRecord::Base.connection()
     
-    @stock = sql.select_one("SELECT in_movements.part_number as part_number,
+    sql_check_available_stock = "SELECT in_movements.part_number as part_number,
       in_movements.serial_number as serial_number, in_movements.manufacturer as manufacturer, 
       in_movements.category as category,
       in_movements.part_description as description, in_movements.warehouse_name, 
@@ -248,7 +253,7 @@ class InventoryController < ApplicationController
           `inventory_parts`.`manufacturer` AS `manufacturer`,
           `inventory_warehouses`.`id` AS `warehouse_id`,
           `inventory_warehouses`.`name` AS `warehouse_name`,
-          `inventory_movements`.`document` AS `movement_warehouse_location`,
+          `inventory_movements`.`location_from_id` AS `movement_warehouse_location`,
           `inventory_movements`.`status` AS `movement_status`,
           `inventory_movements`.`property` AS `movement_property`,
           `inventory_parts`.`value` AS `value`,sum(`inventory_movements`.`quantity`) AS `quantity`,
@@ -258,7 +263,7 @@ class InventoryController < ApplicationController
           LEFT JOIN `inventory_warehouses` on((`inventory_movements`.`warehouse_from_id` = `inventory_warehouses`.`id`))
           LEFT JOIN `inventory_categories` on((`inventory_categories`.`id` = `inventory_parts`.`inventory_category_id`)))
             WHERE (`inventory_movements`.`type_movement` = 2)"+add_out+"              
-                GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`, `inventory_movements`.`document`, `inventory_movements`.`status`,
+                GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`, `inventory_movements`.`location_from_id`, `inventory_movements`.`status`,
                          `inventory_warehouses`.`name`, `inventory_movements`.`property`, `inventory_warehouses`.`id`
                 ORDER BY `inventory_parts`.`part_number`) as out_movements
         RIGHT JOIN
@@ -266,7 +271,7 @@ class InventoryController < ApplicationController
               `inventory_parts`.`manufacturer` AS `manufacturer`, 
               `inventory_warehouses`.`id` AS `warehouse_id`,
               `inventory_warehouses`.`name` AS `warehouse_name`,
-              `inventory_movements`.`document` AS `movement_warehouse_location`,
+              `inventory_movements`.`location_to_id` AS `movement_warehouse_location`,
               `inventory_movements`.`status` AS `movement_status`,
               `inventory_movements`.`property` AS `movement_property`,
               `inventory_parts`.`value` AS `value`,sum(`inventory_movements`.`quantity`) AS `quantity`,
@@ -276,14 +281,17 @@ class InventoryController < ApplicationController
               LEFT JOIN `inventory_warehouses` on((`inventory_movements`.`warehouse_to_id` = `inventory_warehouses`.`id`))
               LEFT JOIN `inventory_categories` on((`inventory_categories`.`id` = `inventory_parts`.`inventory_category_id`)))
                 WHERE (`inventory_movements`.`type_movement` = 1)"+add_in+"
-                  GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`, `inventory_movements`.`document`, `inventory_movements`.`status`, 
+                  GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`, `inventory_movements`.`location_to_id`, `inventory_movements`.`status`, 
                            `inventory_warehouses`.`name`, `inventory_movements`.`property`, `inventory_warehouses`.`id`
                   ORDER BY `inventory_parts`.`part_number`) as in_movements
         ON
           (out_movements.part_id = in_movements.part_id AND
            out_movements.movement_status = in_movements.movement_status AND
            out_movements.warehouse_id = in_movements.warehouse_id AND
-           out_movements.movement_property = in_movements.movement_property);")
+           out_movements.movement_property = in_movements.movement_property AND
+           out_movements.movement_warehouse_location = in_movements.movement_warehouse_location);"
+    #logger.info sql_check_available_stock
+    @stock = sql.select_one(sql_check_available_stock)
     if @stock.present?
       return @stock['stock'].to_f #rescue 0
     else
@@ -353,9 +361,17 @@ class InventoryController < ApplicationController
         params[:from_options] = 'inventory_providor_id'
       elsif @inventory_in_movement.warehouse_from_id
         params[:from_options] = 'warehouse_from_id'
+      end      
+      @locations = InventoryLocation.where(warehouse_id: @inventory_in_movement.warehouse_to_id).map {|p| [p.name,p.id]} if defined?(@warehouses)
+      @locations_out_from = @locations
+    else      
+      if params[:inventory_out_movement]
+        logger.info params[:inventory_out_movement]
       end
-    else
-      @inventory_in_movement = InventoryMovement.new
+      warehouse = InventoryWarehouse.order("name ASC").first
+      @locations = InventoryLocation.where(warehouse_id: warehouse.id).map {|p| [p.name,p.id]} if defined?(@warehouses)      
+      @locations_out_from = @locations
+      @inventory_in_movement = InventoryMovement.new      
     end
     
     if params[:inventory_in_movement]
@@ -365,12 +381,8 @@ class InventoryController < ApplicationController
           
           available_stock = nil
           stock_ok = true
-          if @inventory_in_movement.warehouse_from_id
-          	available_stock = check_available_stock(@inventory_in_movement)
-            logger.info "STOCK DISPONIBLE: "
-            logger.info available_stock
-            logger.info "movement.warehouse_from_id: "            
-            logger.info @inventory_in_movement.warehouse_from_id
+          if @inventory_in_movement.warehouse_from_id            
+          	available_stock = check_available_stock(@inventory_in_movement)            
           	if @inventory_in_movement.quantity and @inventory_in_movement.quantity > available_stock
           		stock_ok = false
           	end
@@ -418,8 +430,8 @@ class InventoryController < ApplicationController
       if current_user.admin? or (user_has_warehouse_permission(current_user.id, params[:inventory_out_movement][:warehouse_from_id]) and 
       (@inventory_out_movement.warehouse_from_id == nil ? true : user_has_warehouse_permission(current_user.id, @inventory_out_movement.warehouse_from_id)))
         unless params[:edit_out]
-          @inventory_out_movement = InventoryMovement.new(params[:inventory_out_movement].permit!)
-          available_stock = check_available_stock(@inventory_out_movement)
+          @inventory_out_movement = InventoryMovement.new(params[:inventory_out_movement].permit!)          
+          available_stock = check_available_stock(@inventory_out_movement)          
           if @inventory_out_movement.quantity and @inventory_out_movement.quantity <= available_stock
             @inventory_out_movement.user_id = current_user.id
             @inventory_out_movement.date = DateTime.now
@@ -428,7 +440,8 @@ class InventoryController < ApplicationController
                 @inventory_in_movement = InventoryMovement.new
                 @inventory_in_movement.inventory_part_id = @inventory_out_movement.inventory_part_id
                 @inventory_in_movement.quantity = @inventory_out_movement.quantity
-                @inventory_in_movement.document = @inventory_out_movement.document
+                @inventory_in_movement.location_from_id = @inventory_out_movement.location_from_id
+                @inventory_in_movement.location_to_id = @inventory_out_movement.location_to_id
                 @inventory_in_movement.document_type = @inventory_out_movement.document_type
                 @inventory_in_movement.value = @inventory_out_movement.value
                 @inventory_in_movement.warehouse_to_id = @inventory_out_movement.warehouse_to_id
@@ -461,6 +474,7 @@ class InventoryController < ApplicationController
         else
           ok = true
           if @inventory_out_movement.quantity < params[:inventory_out_movement][:quantity].to_f
+            @inventory_out_movement.location_from_id = params[:inventory_out_movement][:location_from_id]
             available_stock = check_available_stock(@inventory_out_movement)
             unless (params[:inventory_out_movement][:quantity].to_f - @inventory_out_movement.quantity) <= available_stock
               ok = false
@@ -602,6 +616,53 @@ class InventoryController < ApplicationController
     @providors = InventoryProvidor.all
   end
   
+  def locations
+    @warehouses = InventoryWarehouse.order("name ASC").all.map {|w| [w.name, w.id]}
+    @inventory_location = InventoryLocation.new
+    current_user = find_current_user
+    @has_permission = current_user.admin? || user_has_warehouse_permission(current_user.id, nil)
+    
+    if params[:delete] or params[:edit] or params[:inventory_location]
+      if @has_permission
+        
+        if params[:delete]
+          ok = InventoryLocation.delete(params[:delete]) rescue false
+          unless ok
+            flash[:error] = l('cant_delete_register')
+          end
+        end
+        
+        if params[:edit]
+          @inventory_location = InventoryLocation.find(params[:edit])
+        else
+          @inventory_location = InventoryLocation.new
+        end
+        
+        if params[:inventory_location]
+          @inventory_location.update_attributes(params[:inventory_location].permit!)
+          if @inventory_location.save
+            @inventory_location = InventoryLocation.new
+            params[:edit] = false
+            params[:create]  = false
+          end
+        end
+        
+      else
+        flash[:error] = l('permission_denied')
+      end
+    end
+    
+    @locations = InventoryLocation.all
+  end
+
+  def populate_locations
+    warehouse_id = params[:warehouse_id]
+    @locations = InventoryLocation.where warehouse_id: warehouse_id
+    respond_to do |format|
+      format.json { render json: @locations}
+    end
+  end
+
   def warehouses
     @inventory_warehouse = InventoryWarehouse.new
     @users = User.where('status=1').order('lastname ASC, firstname ASC').map{|u| [u.lastname+" "+u.firstname, u.id]}

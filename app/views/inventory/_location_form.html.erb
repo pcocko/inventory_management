@@ -1,0 +1,16 @@
+<%= labelled_form_for :inventory_location, @inventory_location,
+                             :url => {:action => 'locations', :id => @inventory_location},
+                             :html => {:id => 'location-form'} do |f| %>
+    <%= error_messages_for 'inventory_location' %>
+      <p>        
+        <%= f.select(:warehouse_id, @warehouses) %>        
+        <br/>
+        <%= f.text_field :name, :size => 15, :required => true %>
+        <% if params[:edit] %><input type='hidden' name='edit' value='<%= params[:edit] %>'/>
+        <% else %><input type='hidden' name='create' value='true'/><% end %>
+      </p>
+      <p>
+        <%= submit_tag l(:button_submit) %>
+        <% if params[:edit] %><input type='button' value='<%= l('Cancel') %>' onclick='location.href="locations"' /><% end %>
+      </p>
+<% end %>

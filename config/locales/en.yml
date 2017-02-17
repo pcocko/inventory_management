@@ -28,10 +28,13 @@
   field_location: Location
   field_user_from: User
   field_warehouse_from: Warehouse
+  field_warehouse: Warehouse
   field_user_to: User
   field_warehouse_to: Enter to Warehouse
   field_serial_number: Serial Number
   field_warehouse_location: Location in Warehouse
+  field_location_to: Location in Warehouse
+  field_location_from: Location in Warehouse
   field_property: Owner
   field_comments: Comments
   inventory_stock: Inventory Stock
@@ -39,6 +42,7 @@
   inventory_parts: Products
   inventory_categories: Branches
   inventory_warehouses: Warehouses
+  inventory_locations: Locations
   inventory_providors: Providors
   inventory_manager: Inventory
   Edit: Edit

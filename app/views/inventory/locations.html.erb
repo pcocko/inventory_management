@@ -1,0 +1,26 @@
+<%= render :partial => 'top_menu' %>
+
+<h2><%= l('inventory_locations') %></h2>
+<% if @has_permission %>
+  <div class="box">
+    <h3 style='cursor:pointer;' onclick='$("#ic_create_form").toggle();'>
+    <% if params[:edit] %><%= l('Edit') %><% else %><%= l('Create') %><% end%> <%= l('field_warehouse_location') %>
+    </h3>
+    <div id='ic_create_form' <% if not params[:edit] and not params[:create] %>style='display:none;'<% end %>>
+      <%= render :partial => 'location_form' %>
+    </div>
+  </div>
+<% end %>
+
+<table style='font-size:10px;border-collapse:collapse;'>
+  <tr><th>Id#</th><th><%= l('field_warehouse_location') %></th><th><%= l('field_warehouse_from') %></th></tr>
+  <% @locations.each do |c| %>
+  <tr>
+    <td><%= c.id %></td><td><%= c.name %></td><td><%= InventoryWarehouse.find(c.warehouse_id).name %></td>
+  <% if @has_permission %>
+    <td><%= link_to image_tag('edit.png'), 'locations?edit='+c.id.to_s %></td>
+    <td><%= link_to image_tag('delete.png'), 'locations?delete='+c.id.to_s, :confirm => l('delete_confirmation') %></td>
+  <% end %>
+  </tr>
+  <% end %>
+</table>

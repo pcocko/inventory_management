@@ -27,10 +27,13 @@
   field_location: Locación
   field_user_from: Usuario
   field_warehouse_from: Almacén
+  field_warehouse: Almacén
   field_user_to: Usuario
   field_warehouse_to: Entra a Almacén
   field_serial_number: Numero de Serie
   field_warehouse_location: Ubicación
+  field_location_to: Ubicación
+  field_location_from: Ubicación
   field_property: Propietario
   field_comments: Comentarios 
   inventory_stock: Stock de Inventario
@@ -38,6 +41,7 @@
   inventory_parts: Productos
   inventory_categories: Marcas
   inventory_warehouses: Almacenes
+  inventory_locations: Ubicaciones
   inventory_providors: Proveedores
   inventory_manager: Inventario
   Edit: Editar

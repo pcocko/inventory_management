@@ -5,7 +5,7 @@ Redmine::Plugin.register :redmine_inventory_manager do
   version '0.9'
   url 'https://github.com/danielanguita/Redmine-Inventory-Manager'
 
-  permission :inventory, {:inventory => [:index, :movements, :categories, :parts, :warehouses, :providors]}, :public => false
+  permission :inventory, {:inventory => [:index, :movements, :categories, :parts, :locations, :warehouses, :providors]}, :public => false
 
   permission :inventory_aca, {:inventory => [:index, :movements]}
 
